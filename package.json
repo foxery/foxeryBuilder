@@ -1,10 +1,10 @@
 {
-  "name": "foxery-builder",
+  "name": "foxery-cli",
   "version": "0.1.0",
   "description": "",
   "main": "/bin/index.js",
   "bin": {
-    "foxerybuilder": "/bin/index.js"
+    "foxery-cli": "/bin/index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
     "chalk": "^4.1.0",
     "commander": "^11.0.0",
     "download-git-repo": "^3.0.2",
+    "figlet": "^1.6.0",
     "fs-extra": "^11.1.1",
     "inquirer": "^8.2.4",
     "path": "^0.12.7"

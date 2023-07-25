@@ -19,7 +19,7 @@ program.usage("<command> [options");
 program.version(`v${require("../package.json").version}`);
 program.on("--help", function () {
   console.log(
-    figlet.textSync("ssbuilder", {
+    figlet.textSync("foxery-cli", {
       font: "Ghost",
       horizontalLayout: "default",
       verticalLayout: "default",
@@ -59,54 +59,55 @@ program
         }
       }
     }
+    const res = await inquirer.prompt([
+      {
+        name: "type",
+        type: "list",
+        message: "请选择使用的框架",
+        choices: [
+          {
+            name: "Vue3",
+            value: "vue3&tdesign",
+          },
+          {
+            name: "React",
+            value: "react&umi",
+          },
+          {
+            name: "Vue3小程序",
+            value: "vue3&uniapp",
+          },
+        ],
+      },
+    ]);
+
+    const rep = res.type;
+    const spinner = ora("正在加载项目模板...").start();
+    gitClone(
+      projectList[rep],
+      targetPath,
+      {
+        checkout: "main",
+      },
+      (err) => {
+        if (!err) {
+          fs.remove(path.resolve(targetPath, ".git"));
+          spinner.succeed("项目模板加载完成！");
+          console.log("now run:");
+          console.log(chalk.green(`\n  cd ${name}`));
+          console.log(chalk.green("  npm install"));
+          console.log(
+            chalk.green(
+              `  npm run ${
+                res.type.indexOf("react") !== -1 ? "start" : "dev"
+              }\n`
+            )
+          );
+        } else {
+          spinner.fail(chalk.red("项目模板加载失败，请重新获取！"));
+        }
+      }
+    );
   });
-
-const res = await inquirer.prompt([
-  {
-    name: "type",
-    type: "list",
-    message: "请选择使用的框架",
-    choices: [
-      {
-        name: "Vue3",
-        value: "vue3&tdesign",
-      },
-      {
-        name: "React",
-        value: "react&umi",
-      },
-      {
-        name: "Vue3小程序",
-        value: "vue3&uniapp",
-      },
-    ],
-  },
-]);
-
-const rep = res.type;
-const spinner = ora("正在加载项目模板...").start();
-gitClone(
-  projectList[rep],
-  targetPath,
-  {
-    checkout: "main",
-  },
-  (err) => {
-    if (!err) {
-      fs.remove(path.resolve(targetPath, ".git"));
-      spinner.succeed("项目模板加载完成！");
-      console.log("now run:");
-      console.log(chalk.green(`\n  cd ${name}`));
-      console.log(chalk.green("  npm install"));
-      console.log(
-        chalk.green(
-          `  npm run ${res.type.indexOf("react") !== -1 ? "start" : "dev"}\n`
-        )
-      );
-    } else {
-      spinner.fail(chalk.red("项目模板加载失败，请重新获取！"));
-    }
-  }
-);
 
 program.parse(process.argv);
